@@ -1,0 +1,24 @@
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import 'primeicons/primeicons.css';
+
+
+@import 'ngx-toastr/toastr';
+
+
+.fondo{
+  background: #1C45EF;
+}
+
+.page-header {
+  background-image: url('/assets/images/breadcrumb-bg.jpg');
+}
+
+.main-menu .main-menu-header {
+  padding: 15px 0;
+  background-image: url("/assets/images/user-bg.jpg");
+}
+
+.modal {
+  z-index: 9998;
+}

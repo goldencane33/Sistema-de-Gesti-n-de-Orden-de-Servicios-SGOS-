@@ -1,0 +1,116 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <h5>Registrar orden</h5>
+      </div>
+      <div class="card-block">
+        <div class="row">
+          <div class="col-6 col-sm-6">
+            <div class="form-group">
+              <label class="form-label">Cliente <span style="color: red;">(*)</span></label>
+              <p-autoComplete
+                [(ngModel)]="orden.cliente"
+                [suggestions]="clientesTemp"
+                (completeMethod)="fnBuscarClientes($event)"
+                [style]="{'width':'100%'}"
+                [inputStyle]="{'width':'100%'}"
+                field="razonSocial"
+                [size]="30"
+                [dropdown]="true"
+                [emptyMessage]="'Sin resultados'"
+              ></p-autoComplete>
+            </div>
+          </div>
+
+          <div class="col-6 col-sm-6">
+            <div class="form-group">
+              <label class="form-label">Técnico <span style="color: red;">(*)</span></label>
+              <p-autoComplete
+                [(ngModel)]="orden.trabajador"
+                [suggestions]="tecnicosTemp"
+                (completeMethod)="fnBuscarTecnicos($event)"
+                [style]="{'width':'100%'}"
+                [inputStyle]="{'width':'100%'}"
+                field="nombreCompleto"
+                [size]="30"
+                [dropdown]="true"
+                [emptyMessage]="'Sin resultados'"
+              ></p-autoComplete>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-3 col-sm-3">
+            <div class="form-group">
+              <label class="form-label">Equipo</label>
+              <div class="input-group">
+                <p-autoComplete
+                  [(ngModel)]="equipo"
+                  [suggestions]="equiposTemp"
+                  (completeMethod)="fnBuscarEquipos($event)"
+                  [style]="{'width':'100%'}"
+                  [inputStyle]="{'width':'100%'}"
+                  field="nombre"
+                  [size]="30"
+                  [dropdown]="true"
+                  [emptyMessage]="'Sin resultados'"
+                ></p-autoComplete>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-3 col-sm-3">
+            <div class="form-group">
+              <label class="form-label">Cantidad</label>
+              <p-inputNumber [(ngModel)]="cantidad" [min]="1" [max]="100" [size]="30" [showButtons]="true"></p-inputNumber>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-sm-12">
+            <button type="button" class="btn btn-success" (click)="fnAgregarCarrito()">Agregar</button>
+            &nbsp;
+            <button [disabled]="carrito.length == 0" type="button" class="btn btn-dark" (click)="fnProcesarOrden()">Procesar Orden</button>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12 col-sm-12">
+            <table class="table table-bordered">
+              <thead class="bg-primary">
+                <tr>
+                  <th>#</th>
+                  <th>Equipo</th>
+                  <th>Cantidad</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of carrito; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ item.equipo.nombre }}</td>
+                  <td>{{ item.cantidad }}</td>
+                  <td>
+                    <button
+                        (click)="fnEliminarCarrito(item)"
+                        class="btn btn-danger btn-sm"
+                        title="Eliminar"
+                      >
+                      <i class="fa fa-trash"></i>
+                      </button>
+                  </td>
+                </tr>
+                <tr *ngIf="carrito.length == 0">
+                  <td colspan="4" class="text-center">No hay datos</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

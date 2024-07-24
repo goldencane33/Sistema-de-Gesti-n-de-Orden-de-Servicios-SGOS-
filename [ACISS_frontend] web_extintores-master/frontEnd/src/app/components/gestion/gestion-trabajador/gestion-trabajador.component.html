@@ -1,0 +1,276 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <h5>Gestión de Trabajadores</h5>
+      </div>
+      <div class="card-block">
+        <button (click)="fnNuevo()" class="btn btn-success btn-sm" title="Nuevo Usuario">
+          <i class="fa fa-plus-circle"></i> Nuevo
+        </button>
+
+        <div class="table-responsive mt-2">
+          <p-table
+            #dt1
+            [value]="trabajadores"
+            [rows]="5"
+            [paginator]="true"
+            styleClass="p-datatable-gridlines"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+            [globalFilterFields]="[
+              'cargo.nombre',
+              'nombres',
+              'apellidos',
+              'dni',
+              'correo',
+              'estado'
+            ]"
+            [rowsPerPageOptions]="[5, 10, 25, 50]"
+          >
+            <ng-template pTemplate="caption">
+              <div style="text-align: right">
+                <span class="p-input-icon-left ml-auto" style="position: relative; display: inline-block;">
+                  <input
+                    pInputText
+                    [(ngModel)]="buscadorItems"
+                    type="text"
+                    (input)="dt1.filterGlobal(buscadorItems, 'contains')"
+                    placeholder="Buscar"
+                    class="form-control"
+                    style="padding-left: 25px; width: calc(100% - 25px);"
+                  />
+                  <i class="pi pi-search" style="position: absolute; left: 5px; top: 70%; transform: translateY(-50%);"></i>
+                </span>
+              </div>
+
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="bg-primary text-white" pSortableColumn="cargo.nombre">
+                  Cargo <p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white" pSortableColumn="nombres">
+                  Nombres<p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white" pSortableColumn="apellidos">
+                  Apellidos<p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white" pSortableColumn="dni">
+                  DNI<p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white" pSortableColumn="correo">
+                  Correo<p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white">
+                  Estado
+                </th>
+                <th class="bg-primary text-white">Acción</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>{{ item.cargo.nombre }}</td>
+                <td>{{ item.nombres }}</td>
+                <td>{{ item.apellidos }}</td>
+                <td>{{ item.dni }}</td>
+                <td>{{ item.correo }}</td>
+                <td>
+                  <span
+                    [class]="
+                      'badge ' +
+                      (item.estado == 1 ? 'badge-primary' : 'badge-danger')
+                    "
+                  >
+                    {{ item.estado | estadoTexto }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    (click)="fnCargarDatos(item)"
+                    class="btn btn-primary btn-sm"
+                    title="Editar"
+                  >
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  &nbsp;
+                  <button
+                  [disabled]="esAdmin && item.cargo.id == 1"
+                    (click)="fnConfEliminar(item)"
+                    class="btn btn-danger btn-sm"
+                    title="Eliminar"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7" class="text-center">No hay datos.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalNuevo" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form (ngSubmit)="fnGuardar(datosForm)" #datosForm="ngForm">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">::: {{trabajador.id == 0 ? 'Nuevo': 'Editar'}} trabajador :::</h5>
+          <button (click)="fnCancelar(datosForm)" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Nombres: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <input type="text" class="form-control" name="nombres" required [(ngModel)]="trabajador.nombres"
+                #nombres="ngModel" maxlength="45" minlength="2"
+                [ngClass]="{'alert-danger is-invalid': !nombres.valid && (nombres.dirty || nombres.touched)}">
+
+              <app-form-error-message [control]="nombres" inputRequired="El nombre es requerido" />
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Apellidos: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <input type="text" class="form-control" name="apellidos" required [(ngModel)]="trabajador.apellidos"
+                #apellidos="ngModel" maxlength="45" minlength="2"
+                [ngClass]="{'alert-danger is-invalid': !apellidos.valid && (apellidos.dirty || apellidos.touched)}">
+
+              <app-form-error-message [control]="apellidos" inputRequired="El apellido es requerido" />
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>DNI: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <input type="text" class="form-control" name="telefono" required [(ngModel)]="trabajador.dni"
+                #dni="ngModel" maxlength="8" minlength="8" pattern="[0-9]*"
+                [ngClass]="{'alert-danger is-invalid': !dni.valid && (dni.dirty || dni.touched)}">
+
+              <app-form-error-message [control]="dni" inputRequired="El dni es requerido" inputPattern="Solo debe contener números el DNI" />
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Cargo: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <select class="custom-select form-control"
+                      required name="cargo" id="cargo"
+                      [(ngModel)]="trabajador.cargo.id" #cargo="ngModel"
+                      [ngClass]="{'alert-danger is-invalid': !cargo.valid && (cargo.dirty || cargo.touched)}">
+                  <option value="">::: Seleccione :::</option>
+                  <option [value]="item.id" *ngFor="let item of cargos">{{item.nombre}}</option>
+              </select>
+
+              <app-form-error-message [control]="cargo" inputRequired="Debe seleccionar un cargo" />
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Correo: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <input type="text" class="form-control" name="correo" required [(ngModel)]="trabajador.correo"
+                #correo="ngModel" maxlength="100" [email]="true"
+                [ngClass]="{'alert-danger is-invalid': !correo.valid && (correo.dirty || correo.touched)}">
+
+              <app-form-error-message [control]="correo" inputRequired="El correo electrónico es requerido" />
+            </div>
+          </div>
+
+          @if(trabajador.id == 0){
+            <br />
+            <div class="row">
+              <div class="col-md-4 col-10">
+                <label>Contraseña: <span style="color: red;">(*)</span></label>
+              </div>
+              <div class="col-md-8 col-10">
+                <input type="password" class="form-control" name="password" required [(ngModel)]="trabajador.password"
+                  #password="ngModel" maxlength="100" minlength="6"
+                  [ngClass]="{'alert-danger is-invalid': !password.valid && (password.dirty || password.touched)}">
+
+                <app-form-error-message [control]="password" inputRequired="La contraseña es requerido" />
+              </div>
+            </div>
+          }
+
+          <br />
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Estado: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <select class="form-control" name="estado" required [(ngModel)]="trabajador.estado"
+              #estado="ngModel"
+              [ngClass]="{'alert-danger is-invalid': !estado.valid && (estado.dirty || estado.touched)}">
+                <option value="">::: Seleccione :::</option>
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+
+              <app-form-error-message [control]="estado" inputRequired="Seleccione un estado" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button [disabled]="!datosForm.form.valid" type="submit" class="btn btn-primary btn-sm">
+            <i class="fa fa-save"></i> Guardar
+          </button>
+          <button (click)="fnCancelar(datosForm)" type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+            <i class="fa fa-close"></i> Cerrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEliminar" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">::: Eliminar Cliente :::</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p>¿Está seguro que desea eliminar al trabajador <strong>{{trabajador.nombres + ' ' + trabajador.apellidos }}</strong>?</p>
+      </div>
+      <div class="modal-footer">
+        <button (click)="fnEliminar()" type="button" class="btn btn-primary btn-sm">
+          <i class="fa fa-check"></i> Aceptar
+        </button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+          <i class="fa fa-close"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

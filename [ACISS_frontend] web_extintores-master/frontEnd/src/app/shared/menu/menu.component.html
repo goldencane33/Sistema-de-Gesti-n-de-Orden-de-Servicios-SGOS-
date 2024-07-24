@@ -1,0 +1,151 @@
+<nav class="pcoded-navbar">
+  <div class="sidebar_toggle">
+    <a href="#"><i class="icon-close icons"></i></a>
+  </div>
+  <div class="pcoded-inner-navbar main-menu">
+    <div style="text-align: center;">
+      <div class="main-menu-header ">
+        <img
+          class="img-80 img-radius "
+          src="/assets/images/avatar.png"
+          alt="User-Profile-Image"
+        />
+        <div class="user-details">
+          <span id="more-details "
+            >{{usuario.nombres + ' ' + usuario.apellidos}}
+          </span>
+          <strong id="more-details " style="color: white;"
+            >{{rol}}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="">
+        <a routerLink='home' class="waves-effect waves-dark">
+          <span class="pcoded-micon"
+            ><i class="ti-home"></i><b>D</b></span
+          >
+          <span class="pcoded-mtext" data-i18n="nav.dash.main"
+            >Inicio</span
+          >
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li *ngIf="esAdmin" class="pcoded-hasmenu">
+        <a href="javascript:void(0)" class="waves-effect waves-dark">
+          <span class="pcoded-micon"
+            ><i class="ti-layout-grid2-alt"></i
+          ></span>
+          <span
+            class="pcoded-mtext"
+            data-i18n="nav.basic-components.main"
+            >Gestión</span
+          >
+          <span class="pcoded-mcaret"></span>
+        </a>
+        <ul class="pcoded-submenu">
+          <li>
+            <a routerLink='gestion/cliente' class="waves-effect waves-dark">
+              <span class="pcoded-micon"
+                ><i class="ti-angle-right"></i
+              ></span>
+              <span
+                class="pcoded-mtext"
+                data-i18n="nav.basic-components.alert"
+                >Clientes</span
+              >
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+
+          <li>
+            <a routerLink='gestion/trabajador' class="waves-effect waves-dark">
+              <span class="pcoded-micon"
+                ><i class="ti-angle-right"></i
+              ></span>
+              <span
+                class="pcoded-mtext"
+                data-i18n="nav.basic-components.breadcrumbs"
+                >Trabajadores</span
+              >
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+
+          <li>
+            <a routerLink='gestion/equipo' class="waves-effect waves-dark">
+              <span class="pcoded-micon"
+                ><i class="ti-angle-right"></i
+              ></span>
+              <span
+                class="pcoded-mtext"
+                data-i18n="nav.basic-components.breadcrumbs"
+                >Equipos</span
+              >
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="pcoded-hasmenu">
+        <a href="javascript:void(0)" class="waves-effect waves-dark">
+          <span class="pcoded-micon"
+            ><i class="ti-layout-grid2-alt"></i
+          ></span>
+          <span
+            class="pcoded-mtext"
+            data-i18n="nav.basic-components.main"
+            >Ordenes</span
+          >
+          <span class="pcoded-mcaret"></span>
+        </a>
+        <ul class="pcoded-submenu">
+          <li *ngIf="esAdmin" >
+            <a routerLink='orden/registrar' class="waves-effect waves-dark">
+              <span class="pcoded-micon"
+                ><i class="ti-angle-right"></i
+              ></span>
+              <span
+                class="pcoded-mtext"
+                data-i18n="nav.basic-components.alert"
+                >Registrar</span
+              >
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+
+          <li>
+            <a routerLink='orden/atender' class="waves-effect waves-dark">
+              <span class="pcoded-micon"
+                ><i class="ti-angle-right"></i
+              ></span>
+              <span
+                class="pcoded-mtext"
+                data-i18n="nav.basic-components.alert"
+                >Atender Orden</span
+              >
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+
+          <li>
+            <a routerLink='orden/historial' class="waves-effect waves-dark">
+              <span class="pcoded-micon"
+                ><i class="ti-angle-right"></i
+              ></span>
+              <span
+                class="pcoded-mtext"
+                data-i18n="nav.basic-components.alert"
+                >Historial</span
+              >
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>

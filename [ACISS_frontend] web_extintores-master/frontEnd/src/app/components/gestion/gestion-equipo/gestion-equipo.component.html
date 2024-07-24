@@ -1,0 +1,219 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <h5>Gestión de Equipos</h5>
+      </div>
+      <div class="card-block">
+        <button (click)="fnNuevo()" class="btn btn-success btn-sm" title="Nuevo Usuario">
+          <i class="fa fa-plus-circle"></i> Nuevo
+        </button>
+
+        <div class="table-responsive mt-2">
+          <p-table
+            #dt1
+            [value]="equipos"
+            [rows]="5"
+            [paginator]="true"
+            styleClass="p-datatable-gridlines"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+            [globalFilterFields]="[
+              'codigo',
+              'nombre',
+              'descripcion',
+              'estado'
+            ]"
+            [rowsPerPageOptions]="[5, 10, 25, 50]"
+          >
+            <ng-template pTemplate="caption">
+              <div style="text-align: right">
+                <span class="p-input-icon-left ml-auto" style="position: relative; display: inline-block;">
+                  <input
+                    pInputText
+                    [(ngModel)]="buscadorItems"
+                    type="text"
+                    (input)="dt1.filterGlobal(buscadorItems, 'contains')"
+                    placeholder="Buscar"
+                    class="form-control"
+                    style="padding-left: 25px; width: calc(100% - 25px);"
+                  />
+                  <i class="pi pi-search" style="position: absolute; left: 5px; top: 70%; transform: translateY(-50%);"></i>
+                </span>
+              </div>
+
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="bg-primary text-white" pSortableColumn="codigo">
+                  Codigo <p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white" pSortableColumn="nombre">
+                  Nombre<p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white" pSortableColumn="descripcion">
+                  Descripción<p-sortIcon></p-sortIcon>
+                </th>
+                <th class="bg-primary text-white">
+                  Estado
+                </th>
+                <th class="bg-primary text-white">Acción</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>{{ item.codigo }}</td>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.descripcion }}</td>
+                <td>
+                  <span
+                    [class]="
+                      'badge ' +
+                      (item.estado == 1 ? 'badge-primary' : 'badge-danger')
+                    "
+                  >
+                    {{ item.estado | estadoTexto }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    (click)="fnCargarDatos(item)"
+                    class="btn btn-primary btn-sm"
+                    title="Editar"
+                  >
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  &nbsp;
+                  <button
+                    (click)="fnConfEliminar(item)"
+                    class="btn btn-danger btn-sm"
+                    title="Eliminar"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="5" class="text-center">No hay datos.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalNuevo" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form (ngSubmit)="fnGuardar(datosForm)" #datosForm="ngForm">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">::: {{equipo.id == 0 ? 'Nuevo': 'Editar'}} equipo :::</h5>
+          <button (click)="fnCancelar(datosForm)" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Código: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <input type="text" class="form-control" name="codigo" required [(ngModel)]="equipo.codigo"
+                #codigo="ngModel" maxlength="20" minlength="1"
+                [ngClass]="{'alert-danger is-invalid': !codigo.valid && (codigo.dirty || codigo.touched)}">
+
+              <app-form-error-message [control]="codigo" inputRequired="El codigo es requerido" />
+            </div>
+          </div>
+          <br />
+
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Nombres: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <input type="text" class="form-control" name="nombre" required [(ngModel)]="equipo.nombre"
+                #nombre="ngModel" maxlength="45" minlength="2"
+                [ngClass]="{'alert-danger is-invalid': !nombre.valid && (nombre.dirty || nombre.touched)}">
+
+              <app-form-error-message [control]="nombre" inputRequired="El nombre es requerido" />
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Descripción: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <textarea class="form-control" name="descripcion" required [(ngModel)]="equipo.descripcion"
+                #descripcion="ngModel" maxlength="200" minlength="2"
+                [ngClass]="{'alert-danger is-invalid': !descripcion.valid && (descripcion.dirty || descripcion.touched)}">
+              </textarea>
+
+              <app-form-error-message [control]="descripcion" inputRequired="La descripción es requerida" />
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col-md-4 col-10">
+              <label>Estado: <span style="color: red;">(*)</span></label>
+            </div>
+            <div class="col-md-8 col-10">
+              <select class="form-control" name="estado" required [(ngModel)]="equipo.estado"
+              #estado="ngModel"
+              [ngClass]="{'alert-danger is-invalid': !estado.valid && (estado.dirty || estado.touched)}">
+                <option value="">::: Seleccione :::</option>
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+
+              <app-form-error-message [control]="estado" inputRequired="Seleccione un estado" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button [disabled]="!datosForm.form.valid" type="submit" class="btn btn-primary btn-sm">
+            <i class="fa fa-save"></i> Guardar
+          </button>
+          <button (click)="fnCancelar(datosForm)" type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+            <i class="fa fa-close"></i> Cerrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEliminar" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">::: Eliminar equipo :::</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p>¿Está seguro que desea eliminar el equipo <strong>{{equipo.nombre }}</strong>?</p>
+      </div>
+      <div class="modal-footer">
+        <button (click)="fnEliminar()" type="button" class="btn btn-primary btn-sm">
+          <i class="fa fa-check"></i> Aceptar
+        </button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+          <i class="fa fa-close"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

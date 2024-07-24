@@ -1,0 +1,13 @@
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.logo-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
